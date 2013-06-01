@@ -182,14 +182,15 @@ public class Indexer {
     
     }
 	public static void main(String args[]) throws Exception {
-				String indexDir="C:\\973\\indexDir";
-				//String dataDir="C:\\973\\dataDir";
-				String imgDir="C:\\973\\img\\";
-				String topicDir="C:\\973\\topic\\";
+				String baseDir="E:\\DCD\\summarization\\EvoLDA_v1.3_gp_kl [alpha = 0.13, beta = 0.01, k = 20, iter = 250]-2240.165225\\epoch1\\summarization\\";
+				String indexDir=baseDir+"indexDir";
+				String dataDir=baseDir+"dataDir";
+				//String imgDir=baseDir+"img\\";
+				//String topicDir=baseDir+"topic\\";
 			    Indexer indexer = new Indexer();
-			    indexer.SqlIndex(indexDir,imgDir,topicDir);
+			    //indexer.SqlIndex(indexDir,imgDir,topicDir);
 			    
-			    //indexer.MyIdexer(dataDir, indexDir); 
+			    indexer.MyIdexer(dataDir, indexDir); 
 				  
 		  }
 
