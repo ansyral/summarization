@@ -151,10 +151,11 @@ public class MatlabResultToPeerSummary {
 	}
 	
 	public static void main(String args[]) throws Exception {
-		String indexDir="C:\\973\\indexDir";
-		String MatlabResultDir = "C:\\973\\MatlabResultDir\\";
-		String PeersDir = "C:\\973\\PeersDir\\";
-		String sentenceNumberOfMatrixDir = "C:\\973\\SentenceNumberOfMatrixDir\\";
+		String baseDir="E:\\DCD\\summarization\\EvoLDA_data\\epoch3\\";
+		String indexDir=baseDir+"summarization\\indexDir";
+		String MatlabResultDir =baseDir+ "summarization\\MatlabResultDir\\";
+		String PeersDir =baseDir+ "summarization\\PeersDir\\";
+		String sentenceNumberOfMatrixDir = baseDir+"summarization\\SentenceNumberOfMatrixDir\\";
 		
 		Directory dir = FSDirectory.open(new File(indexDir));
 		IndexReader reader = IndexReader.open(dir);

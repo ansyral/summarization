@@ -107,11 +107,12 @@ public class UpdateDatabase
 	}
 	public static void main (String args[]) throws IOException
 	{
-		String imgresultDir="C:\\973\\RepreimgDir\\";
-		String topicDir="C:\\973\\topic\\topicno.txt";
-		String peersDir="C:\\973\\PeersDir\\";
-		String hftermDir="C:\\973\\hftermDir\\";
-		String titleDir="C:\\973\\title\\";
+		String baseDir="E:\\DCD\\summarization\\EvoLDA_data\\epoch3\\";		
+		String imgresultDir=baseDir+"summarization\\RepreimgDir\\";
+		//String topicDir="C:\\973\\topic\\topicno.txt";
+		String peersDir=baseDir+"summarization\\PeersDir\\";
+		String hftermDir=baseDir+"summarization\\hftermDir\\";
+		//String titleDir="C:\\973\\title\\";
 
 	    UpdateDatabase updatedatabase = new UpdateDatabase();
 	    updatedatabase.update(topicDir,peersDir,imgresultDir,hftermDir,titleDir);
