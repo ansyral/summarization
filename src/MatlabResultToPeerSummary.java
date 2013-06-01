@@ -50,7 +50,7 @@ public class MatlabResultToPeerSummary {
 		
 		
 		int SummaryLengthCount = 0 ;
-		int SummaryLengthLimit =200;
+		int SummaryLengthLimit =600;
 		
 		//System.out.println(MatResult.getName());
 		
@@ -116,7 +116,7 @@ public class MatlabResultToPeerSummary {
 					//System.out.print("Summary Length limited..."+"\n");
 					if(i==0)
 					{
-						bw.write(WriteLine.substring(0, 250));
+						bw.write(WriteLine.substring(0, 600));
                         bw.flush();
                         i++;
 					}
