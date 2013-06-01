@@ -213,7 +213,7 @@ public class Indexer {
 	    			 if(doc.getNodeName().equals("docs"))
 	    			 {
 	    				 NamedNodeMap docattrs=doc.getAttributes();
-	    				 if(Double.parseDouble(docattrs.item(1).getNodeValue())>=0.6)
+	    				 if(Double.parseDouble(docattrs.item(1).getNodeValue())>=0.5)
 	    				 {
 	    					 String filename=docattrs.item(0).getNodeValue();
 	    					 FileInputStream fis = new FileInputStream(filename);	
