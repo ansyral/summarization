@@ -44,7 +44,7 @@ public class IndexToDataMatrix {
 	}
 	
 	public void MyIndexToDataMatrix(IndexReader reader, String indexDir, String dataMatrixDir, String sentenceNumberOfMatrixDir) throws Exception{
-		int docFileNumber = 4;
+		int docFileNumber = 0;
 		//int totolDocFile = 60;
 		int totolDocFile = 1;
 		
@@ -69,7 +69,7 @@ public class IndexToDataMatrix {
 			for (int j=0;j<reader.numDocs();j++){//search all the document in the reader 
 				
 				
-				if(reader.document(j).getFieldable("FileName").stringValue().contains(name)){//find a sentence of the document set 
+				//if(reader.document(j).getFieldable("FileName").stringValue().contains(name)){//find a sentence of the document set 
 					
 					if(reader.getTermFreqVector(j, "Sen")==null){// some sentence does not contain valuable terms so the term vector is null.
 						continue;
@@ -125,7 +125,7 @@ public class IndexToDataMatrix {
 					}//end of else
 					
 					
-				}//end of if
+				//}//end of if
 
 			}//end of for
 			
@@ -259,17 +259,18 @@ public class IndexToDataMatrix {
 	}
 	
 	public static void main(String args[]) throws Exception {
-		String indexDir="C:\\973\\indexDir";
-		String dataMatrixDir="C:\\973\\DataMatrixDir\\";
-	    String sentenceNumberOfMatrixDir = "C:\\973\\SentenceNumberOfMatrixDir\\";
-		String topicDir="C:\\973\\topic\\topicno.txt";
+		String baseDir="E:\\DCD\\summarization\\EvoLDA_data\\epoch3\\";
+		String indexDir=baseDir+"summarization\\indexDir";				
+		String dataMatrixDir=baseDir+"summarization\\DataMatrixDir\\";
+	    String sentenceNumberOfMatrixDir = baseDir+"summarization\\SentenceNumberOfMatrixDir\\";
+
 	    
 	    Directory dir = FSDirectory.open(new File(indexDir));
 		IndexReader reader = IndexReader.open(dir);
 		
 		IndexToDataMatrix ITDM = new IndexToDataMatrix();
-		//ITDM.MyIndexToDataMatrix(reader, indexDir, dataMatrixDir, sentenceNumberOfMatrixDir);
-		ITDM.SqlIndexToDataMatrix(reader, indexDir, topicDir,dataMatrixDir, sentenceNumberOfMatrixDir);
+		ITDM.MyIndexToDataMatrix(reader, indexDir, dataMatrixDir, sentenceNumberOfMatrixDir);
+		//ITDM.SqlIndexToDataMatrix(reader, indexDir, topicDir,dataMatrixDir, sentenceNumberOfMatrixDir);
 	}
 
 }
