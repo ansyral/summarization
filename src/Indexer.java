@@ -99,7 +99,7 @@ public class Indexer {
 		
 	public void writeindex(String content,IndexWriter writer,String pre_topic_id) throws CorruptIndexException, IOException
 	{
-		String splitword="[。！？.?! ]";
+		String splitword="[。！？\\.?!]";
 		String []sent_content=content.split(splitword);
 		for(int j=0;j<sent_content.length;j++)
 		{
@@ -134,6 +134,7 @@ public class Indexer {
 		BufferedWriter bw_img = null,bw_topic=new BufferedWriter(fw_topic);
 	    int pre_topic_id=-1;
 	    String content="";
+	   
 	    while(rs.next()) {  
     		int topic_id = rs.getInt("topic_id");
 	    	if(topic_id!=pre_topic_id)
@@ -224,6 +225,7 @@ public class Indexer {
 	    						 content+=readbin;
 	    						 readbin=br.readLine();
 	    					 }
+	    					 
 	    					 writeindex(content, writer,filename);
 	    					 br.close();
 	    					 fis.close();
