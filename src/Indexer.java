@@ -16,6 +16,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -34,16 +38,20 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 //import ICTCLASAnalyzer;
 import org.apache.lucene.util.Version;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class Indexer {
 	public void MyIdexer(String dataDir, String indexDir) 
 			throws CorruptIndexException, LockObtainFailedException, IOException{
 				
-		     //Analyzer simple = new StandardAnalyzer(Version.LUCENE_36);		
+		     Analyzer simple = new StandardAnalyzer(Version.LUCENE_36);		
 			//Analyzer simple = new SimpleAnalyzer(Version.LUCENE_36);
 		    //Analyzer simple = new PaodingAnalyzer();
 		    //Analyzer simple = new ICTCLASAnalyzer(ICTCLASDelegate.getDelegate());
-		   Analyzer simple = new FUDANAnalyzer(FUDANDelegate.getDelegate());
+		   //Analyzer simple = new FUDANAnalyzer(FUDANDelegate.getDelegate());
 		   // IndexWriter writer = new IndexWriter(indexDir, simple, true, IndexWriter.MaxFieldLength.UNLIMITED);
 		    IndexWriterConfig conf = new IndexWriterConfig(Version.LUCENE_36,simple);
 		    Directory dir = FSDirectory.open(new File(indexDir));
@@ -89,14 +97,14 @@ public class Indexer {
 			fis.close();
 		}
 		
-	public void writeindex(String content,IndexWriter writer,int pre_topic_id) throws CorruptIndexException, IOException
+	public void writeindex(String content,IndexWriter writer,String pre_topic_id) throws CorruptIndexException, IOException
 	{
 		String splitword="[。！？.?! ]";
 		String []sent_content=content.split(splitword);
 		for(int j=0;j<sent_content.length;j++)
 		{
 			Document doc = new Document();
-			doc.add(new Field("FileName", ""+pre_topic_id ,Field.Store.YES, Field.Index.NO));
+			doc.add(new Field("FileName", pre_topic_id ,Field.Store.YES, Field.Index.NO));
 			doc.add(new Field("Sen", sent_content[j].trim() ,Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
 			System.out.println(pre_topic_id+": "+sent_content[j]);
 			writer.addDocument(doc);
@@ -134,7 +142,7 @@ public class Indexer {
 	    		{
 	    			bw_img.close();
 					fw_img.close();
-					writeindex(content,writer,pre_topic_id);
+					writeindex(content,writer,""+pre_topic_id);
 		    		content="";
 	    		}
 		    	imgFile=new File(imgDir+topic_id+"id_title.txt");
@@ -163,7 +171,7 @@ public class Indexer {
 	    }  
 	    bw_img.close();
 	    fw_img.close();
-	    writeindex(content,writer,pre_topic_id);
+	    writeindex(content,writer,""+pre_topic_id);
 	    
 	    bw_topic.close();
 	    fw_topic.close();
@@ -181,16 +189,63 @@ public class Indexer {
 		
     
     }
+    
+    public void xmlIndex(String dataDir, String indexDir) throws IOException, ParserConfigurationException, SAXException
+    {
+    	Analyzer simple = new StandardAnalyzer(Version.LUCENE_36);		
+	    IndexWriterConfig conf = new IndexWriterConfig(Version.LUCENE_36,simple);
+	    Directory dir = FSDirectory.open(new File(indexDir));
+	    IndexWriter writer = new IndexWriter(dir, conf);
+	    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance(); 
+	    DocumentBuilder db = dbf.newDocumentBuilder(); 
+	    org.w3c.dom.Document document = db.parse(new File(dataDir)); 
+	    NodeList topics = document.getElementsByTagName("topic"); 	    
+	    for (int i = 0; i < topics.getLength(); i++) { 
+	    	 Node topic = topics.item(i);
+	    	 Node attr=topic.getAttributes().item(0);
+	    	 if(attr.getNodeName().equals("gid")&&attr.getNodeValue().equals("2"))
+	    	 {
+	    		 NodeList docs=topic.getChildNodes();
+	    		 for(int j=0;j<docs.getLength();j++)
+	    		 {
+	    			 Node doc=docs.item(j);
+	    			 if(doc.getNodeName().equals("docs"))
+	    			 {
+	    				 NamedNodeMap docattrs=doc.getAttributes();
+	    				 if(Double.parseDouble(docattrs.item(1).getNodeValue())>=0.6)
+	    				 {
+	    					 String filename=docattrs.item(0).getNodeValue();
+	    					 FileInputStream fis = new FileInputStream(filename);	
+	    					 BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+	    					 String readbin=br.readLine();
+	    					 String content="";
+	    					 while(readbin!=null)
+	    					 {
+	    						 content+=readbin;
+	    						 readbin=br.readLine();
+	    					 }
+	    					 writeindex(content, writer,filename);
+	    					 br.close();
+	    					 fis.close();
+	    				 }
+	    			 }
+	    		 }
+	    		 break;
+	    	 }
+	    }
+	    writer.close();
+    }
+    
 	public static void main(String args[]) throws Exception {
-				String baseDir="E:\\DCD\\summarization\\EvoLDA_v1.3_gp_kl [alpha = 0.13, beta = 0.01, k = 20, iter = 250]-2240.165225\\epoch1\\summarization\\";
-				String indexDir=baseDir+"indexDir";
-				String dataDir=baseDir+"dataDir";
-				//String imgDir=baseDir+"img\\";
-				//String topicDir=baseDir+"topic\\";
+				String baseDir="E:\\DCD\\summarization\\EvoLDA_data\\epoch3\\";
+				String indexDir=baseDir+"summarization\\indexDir";
+				String dataDir=baseDir+"topics_3.xml";
+				//String imgDir=baseDir+"summarization\\img\\";
+				//String topicDir=baseDir+"summarization\\topic\\";
 			    Indexer indexer = new Indexer();
 			    //indexer.SqlIndex(indexDir,imgDir,topicDir);
-			    
-			    indexer.MyIdexer(dataDir, indexDir); 
+			    indexer.xmlIndex(dataDir,indexDir);
+			    //indexer.MyIdexer(dataDir, indexDir); 
 				  
 		  }
 
