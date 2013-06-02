@@ -10,7 +10,7 @@ import java.sql.Statement;
 
 public class UpdateDatabase
 {
-	public void update(String peersDir,String imgresultDir,String hftermDir) throws IOException
+	public void update(String peersDir,String imgresultDir,String hftermDir,int monthid) throws IOException
 	{
 		String driver = "com.mysql.jdbc.Driver";			
 		String url = "jdbc:mysql://127.0.0.1/summaryshow";
@@ -67,7 +67,7 @@ public class UpdateDatabase
 			
 		
 			
-		String state=sql+"("+1+",\""+summary+"\",\""+repreimg+"\",\""+hfterm+"\",\""+hfterm_weight+"\");";
+		String state=sql+"("+1+","+monthid+",\""+summary+"\",\""+repreimg+"\",\""+hfterm+"\",\""+hfterm_weight+"\");";
 		//String state=sql+"\""+title.trim()+"\" where topic_id="+topic_id+";";
 		//String state=sql+"people=\""+people.trim()+"\",place=\""+place.trim()+"\",org=\""+org.trim()+"\" where topic_id=1;";
 		statement.execute(state);
@@ -88,14 +88,16 @@ public class UpdateDatabase
 	}
 	public static void main (String args[]) throws IOException
 	{
-		String baseDir="E:\\DCD\\summarization\\EvoLDA_data\\epoch3\\";		
+		int monthid=11;
+		String baseDir="E:\\DCD\\summarization\\EvoLDA_data\\epoch"+monthid+"\\";		
 		String imgresultDir=baseDir+"summarization\\RepreimgDir\\";
 		//String topicDir="C:\\973\\topic\\topicno.txt";
 		String peersDir=baseDir+"summarization\\PeersDir\\";
 		String hftermDir=baseDir+"summarization\\hftermDir\\";
 		//String titleDir="C:\\973\\title\\";
-
+		//String imporDir="E:\\DCD\\summarization\\EvoLDA_data\\importance.txt";
+		
 	    UpdateDatabase updatedatabase = new UpdateDatabase();
-	    updatedatabase.update(peersDir,imgresultDir,hftermDir);
+	    updatedatabase.update(peersDir,imgresultDir,hftermDir,monthid);
 	}
 }
